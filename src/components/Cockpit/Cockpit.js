@@ -1,9 +1,23 @@
-import React from 'react';
-import styles from './Cockpit.module.css'
+import React, {useEffect, useRef, useContext} from 'react';
+import styles from './Cockpit.module.css';
+import AuthContext from '../../context/auth-context';
 
 const cockpit = (props) => {
-  let classes = [];
+  const classes = [];
   let btnClass = '';
+  //const authContext = useContext(AuthContext);
+
+  //console.log(authContext.authenticated);
+  // const toogleBtnRef = useRef(null);
+  
+  // useEffect(() => {
+  //   toogleBtnRef.current.click();
+
+  //   return () => {
+  //     console.log('[Cockpit.js] useEffect');
+  //   }
+
+  // }, []);
 
   if(props.showPersons) {
     btnClass = styles.Red;
@@ -20,11 +34,14 @@ const cockpit = (props) => {
   return (
     <div className={styles.Cockpit}>
       <p className={classes.join(' ')}>React is cool</p>
-      <button 
+      <button
+        // ref={toogleBtnRef}
         className={btnClass}
-        onClick={props.toggle}>Toogle Persons</button>
+        onClick={props.toggle}>Toogle Persons
+      </button>
+      {/* <button onClick={authContext.login}>Log in</button> */}
     </div>
   )
 }
 
-export default cockpit;
+export default React.memo(cockpit);

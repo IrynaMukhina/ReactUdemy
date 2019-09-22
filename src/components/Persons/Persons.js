@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import Person from './Person/Person';
 
+
 class Persons extends Component {
-  static getDeriveStateFromProps(props, state) {
-    console.log('[Persons.js] getDeriveStateFromProps')
+  // static getDeriveStateFromProps(props, state) {
+  //   console.log('[Persons.js] getDeriveStateFromProps')
     
-    return state;
-  }
+  //   return state;
+  // }
 
   shouldComponentUpdate(nextProps, nextState) {
     console.log('[Persons.js] shouldComponentUpdate');
@@ -14,8 +15,13 @@ class Persons extends Component {
     return true;
   }
 
-  getSnepshotBeforeUpdate(prevProps, prevState) {
+  getSnapshotBeforeUpdate(prevProps, prevState) {
     console.log('[Persons.js] getSnepshotBeforeUpdate');
+    return null;
+  }
+
+  componentWillUpdate() {
+
   }
 
   componentDidUpdate() {
@@ -32,7 +38,8 @@ class Persons extends Component {
             name={person.name}
             age={person.age}
             key={person.id}
-            changed={(event) => this.props.changed(event, person.id)} 
+            changed={(event) => this.props.changed(event, person.id)}
+            isAuth={this.props.isAuthenticated}
           />
         )
       })

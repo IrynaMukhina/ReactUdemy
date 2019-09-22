@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import styles from './App.module.css';
 import Persons from '../components/Persons/Persons';
-import Cockpit from '../components/Cockpit/Cockpit'
+import Cockpit from '../components/Cockpit/Cockpit';
+import withClass from '../hoc/withClass';
+import Auxiliary from '../hoc/Auxiliary';
+import AuthContext from '../context/auth-context';
 
 // const App = (props) => {
 //   const [personsState, setPersonsState] = useState({
@@ -61,7 +64,9 @@ class App extends Component {
         {id: 'as1233', name: 'Ana', age: 31}
       ],
       otherState: 'Some other state',
-      showPersons: false
+      showPersons: false,
+      changeCounter: 0,
+      authenticated: false
     }
 
   }
@@ -79,6 +84,16 @@ class App extends Component {
     console.log('[App.js] componentDidMount')
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('[App.js] shouldComponentUpdate');
+
+    return true;
+  }
+
+  componentDidUpdate() {
+    console.log('[App.js] componentDidUpdate')
+  }
+
   // state = {
   //   persons: [
   //     {id: 'dc1231', name: 'Max', age: 28},
@@ -88,6 +103,12 @@ class App extends Component {
   //   otherState: 'Some other state',
   //   showPersons: false
   // }
+
+  loginHandler = () => {
+    this.setState({
+      authenticated: !this.state.authenticated,
+    })
+  }
 
   nameChangeHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex(p => {
@@ -103,7 +124,13 @@ class App extends Component {
     const persons = [...this.state.persons]
     persons[personIndex] = person;
 
-    this.setState({persons: persons,});
+    this.setState((prevState, props) => {
+      return {
+        persons: persons,
+        changeCounter: prevState.changeCounter + 1
+      };
+    });
+    
   }
 
   togglePersonsHandler = () => {
@@ -129,21 +156,29 @@ class App extends Component {
           persons={this.state.persons}
           clicked={this.deletePersonHandler}
           changed={this.nameChangeHandler}
+          isAuthenticated={this.state.authenticated}
         />
       )
     }
 
     return (
-      <div className={styles.App}>
-        <Cockpit
-          persons={this.state.persons}
-          showPersons={this.state.showPersons}
-          toggle={this.togglePersonsHandler}
-        />
-        {persons}
-      </div>
+      <Auxiliary classes={styles.App}>
+        <AuthContext.Provider
+          value={{
+            authenticated: this.state.authenticated,
+            login: this.loginHandler
+          }}>
+          <Cockpit
+            persons={this.state.persons}
+            showPersons={this.state.showPersons}
+            toggle={this.togglePersonsHandler}
+          />
+          {persons}
+        </AuthContext.Provider>
+      </Auxiliary>
+       
     );
   }
 }
 
-export default App;
+export default withClass(App, styles.App);
